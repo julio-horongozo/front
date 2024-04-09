@@ -1,22 +1,16 @@
-import './styles.css'
-import { MDBCarousel, MDBCarouselItem, MDBCarouselCaption } from 'mdb-react-ui-kit';
-import banner1 from './banner1.png';
-import banner2 from './banner2.png';
-import banner3 from './banner3.png';
+import './Produtos.css';
+import { useEffect, useState } from 'react';
+import { Card } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../../services/firebaseConnection';
-import { useEffect, useState } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 
 
-
-function Home() {
-
-  const [produtos, setProducts] = useState([]);
-  
-
-
+function Produtos() {
+    const [produtos, setProducts] = useState([]);
+    const [pesquisa, setPesquisa] = useState([]);
     useEffect(() => {
         async function loadProducts() {
             const unsub = onSnapshot(collection(db, "produtos"), (snapshot) => {
@@ -42,33 +36,25 @@ function Home() {
 
     }, [])
 
+    return (
 
-  return (
 
-    <><MDBCarousel showIndicators showControls fade>
-      <MDBCarouselItem itemId={1}>
-        <img src={banner1} className='d-block w-100' alt='...' />
-      </MDBCarouselItem>
-
-      <MDBCarouselItem itemId={2}>
-        <img src={banner2} className='d-block w-100' alt='...' />
-      </MDBCarouselItem>
-
-      <MDBCarouselItem itemId={3}>
-        <img src={banner3} className='d-block w-100' alt='...' />
-      </MDBCarouselItem>
-    </MDBCarousel><div className='col-12'>
-        <br></br>
-
-        <div style={{display:"flex", justifyContent: 'left'}}>
-          <h1 style={{paddingRight: '80%'}}>Produtos</h1>          
-          
-        </div>
-
+        <div>
+            <div style={{width: '50%', margin:'auto'}}>
+            <Form className="d-flex" >
+            <Form.Control
+              type="search"
+              placeholder="Pesquisar"
+              className="me-2"
+              aria-label="Search"
+              onChange={(e) => setPesquisa(e.target.value)}
+            />
+          </Form>
+          </div>
         <ul className='containe'>
             {produtos.map((produtos) => {
-              if(produtos.destaque == "sim"){
-                return (
+                if(produtos.titulo.indexOf(pesquisa) != -1){
+                return (                    
                     <div id='zoomout'>
                     <a href={`/detalhes/${produtos.id}`} className='botaoGrande'>
                         <Card>
@@ -84,21 +70,17 @@ function Home() {
                     </a>
                     </div>
                 )
-              }
-            })}
+            }})}
         </ul>
-        
+        </div>
 
 
 
 
-        <br></br>
-        <br></br>
 
-      </div></>
+    );
 
-  );
 
 }
 
-export default Home;
+export default Produtos;

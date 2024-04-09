@@ -1,0 +1,11 @@
+#zoomout {
+
+    transition: all 1s;
+
+}
+
+#zoomout:hover {
+
+    transform: scale(1.1);
+
+}

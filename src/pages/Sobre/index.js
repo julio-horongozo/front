@@ -6,8 +6,8 @@ function Sobre() {
   return (
     <><Breadcrumb className='sobre'>
           <Breadcrumb.Item href="#">Home </Breadcrumb.Item>
-          <Breadcrumb.Item active >Sobre a InovaPro</Breadcrumb.Item>
-      </Breadcrumb><><h1 className='sobre'>SOBRE A EMPRESA INOVAPRO</h1><p className='sobre'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est reprehenderit possimus excepturi nostrum
+          <Breadcrumb.Item active >Sobre a AgroPro</Breadcrumb.Item>
+      </Breadcrumb><><h1 className='sobre'>SOBRE A EMPRESA AGROPRO</h1><p className='sobre'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est reprehenderit possimus excepturi nostrum
           repellat inventore sunt ad sequi officiis cumque, nam, aut distinctio libero facilis commodi ratione
           amet optio doloribus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem recusandae,
           est earum consequatur corrupti perspiciatis illum aut eius eaque ad aspernatur. Adipisci est ratione iure,

@@ -1,0 +1,84 @@
+.containe{
+    display: grid;
+    grid-template-columns: repeat(4,288px);
+    padding-top: 10px;
+    gap: 15px;
+    justify-content: center;
+    
+}
+
+.titulo {
+
+    height: 100px;
+
+}
+
+.card {
+      
+      
+    width: 288px;
+    
+    
+  
+}
+
+.botaoGrande {
+
+    text-decoration: none;
+    color: #3c4c63;
+
+
+}
+
+.botaoGrande:hover{
+
+    text-decoration: none;
+    color: #3c4c63;
+
+}
+
+.valorproduto{
+
+    color: #f8a02c; font-size: xx-large; text-decoration: none; font-weight: bolder;
+
+}
+
+#zoomin {
+
+    transition: all 0.5s;
+
+}
+
+#zoomin:hover {
+
+    transform: scale(0.95);
+
+}
+
+#zoomout {
+
+    transition: all 1s;
+
+}
+
+#zoomout:hover {
+
+    transform: scale(1.1);
+
+}
+
+@media (max-width:1200px)  {
+    .containe {
+      grid-template-columns: repeat(3,288px);
+    }
+    }
+  @media (max-width:900px) {
+    .containe {
+      grid-template-columns: repeat(2,288px);
+    }
+    }
+  @media (max-width:600px) {
+    .containe {
+      grid-template-columns: repeat(1,288px);
+    }
+    }

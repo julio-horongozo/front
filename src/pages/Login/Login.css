@@ -1,0 +1,100 @@
+#minimalista{
+
+    background-color: #fff;
+    border: #fff;
+    color: #3c4c63;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    transition: all 1s;
+
+}
+#minimalista:hover{
+
+    transform: scale(1.1);
+
+}
+
+.formulario{
+
+    width: 40%;
+    margin: auto;
+    padding-right: 30px;
+
+}
+#entrar{
+
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #9cac74;
+    border-color: #9cac74;
+    transition: all 1s;
+
+}
+
+#entrar1{
+
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #9cac74;
+    border-color: #9cac74;
+    transition: all 1s;
+
+}
+
+#entrar1:hover{
+
+    transform: scale(1.01);
+
+}
+
+#entrar:hover{
+
+    transform: scale(1.1);
+
+}
+
+#inp{
+
+    height: 38px;
+    width: 100%;
+    border: #c3c7cc 1px solid;
+    border-radius: 5px;
+    padding-left: 13px;
+    outline: 0;
+    transition: all 0.15s;
+
+}
+
+#inp:focus{
+
+    border: #86b3f3 1px solid;
+    outline: #bad7ff 0.3rem solid;
+
+}
+
+#input:valid{
+
+    border-bottom: #c3c7cc 1px solid;
+
+}
+
+
+
+@media (max-width:992px)  {
+    .imagem {
+
+        display: none;
+
+    }
+
+    .formulario{
+
+        width: 70%;
+
+    }
+    }

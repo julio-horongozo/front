@@ -1,18 +1,13 @@
-import Button from 'react-bootstrap/Button';
+import './Erro.css'
+import erro from './Design sem nome.png';
+import Image from 'react-bootstrap/Image';
+import Col from 'react-bootstrap/Col';
 
 function Erro() {
   return (
-    <>
-      <Button variant="primary">Primary</Button>{' '}
-      <Button variant="secondary">Secondary</Button>{' '}
-      <Button variant="success">Success</Button>{' '}
-      <Button variant="warning">Warning</Button>{' '}
-      <Button variant="danger">Danger</Button>{' '}
-      <Button variant="info">Info</Button>{' '}
-      <Button variant="light">Light</Button>{' '}
-      <Button variant="dark">Dark</Button>
-      <Button variant="link">Link</Button>
-    </>
+    <div className='img'>
+      <Image src={erro} fluid />
+    </div>
   );
 }
 

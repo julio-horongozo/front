@@ -54,7 +54,7 @@ export default function Rodape() {
             <MDBCol md="3" lg="4" xl="3" className='mx-auto mb-4'>
               <h6 className='text-uppercase fw-bold mb-4'>
                 <MDBIcon icon="gem" className="me-3" />
-                QUIMICA INOVAPRO
+                QUIMICA AGROPRO
               </h6>
               <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. At, eveniet quod est id aliquam dolore esse quam in fuga eius! Optio id omnis vero perferendis nihil hic sunt minima incidunt!
@@ -66,7 +66,7 @@ export default function Rodape() {
 </h6>
               <p>
                 <a href='#!' className='text-reset' style={{textDecoration: 'none'}}>
-                  Quimica InovaPro LTDA
+                  Quimica AgroPro LTDA
                 </a>
               </p>
               <p>
@@ -100,7 +100,7 @@ export default function Rodape() {
               <h6 className='text-uppercase fw-bold mb-4'>INSTUTIONAL</h6>
               <p>
               <a href='/sobre' className='text-reset'style={{textDecoration: 'none'}}>
-                  Sobre a InovaPro
+                  Sobre a AgroPro
                 </a>
               </p>
               <p>
@@ -114,10 +114,7 @@ export default function Rodape() {
       </section>
 
       <div className='text-center p-4' style={{ backgroundColor: '#3c4c63', color: '#fff' }}>
-        © 2023 Copyright: 
-        <a className='text-reset fw-bold' href='https://mdbootstrap.com/'>
-          inovapro.com.br
-        </a>
+        <p>© 2023 Copyright: <a className='text-reset fw-bold' href='https://quimicaagropro.netlify.app'>quimicaagropro.netlify.app</a></p>
       </div>
     </MDBFooter>
   );

@@ -13,12 +13,56 @@
 #pesquisa {
 
     border-color: #9cac74;
-    color: #9cac74;
+    background-color: #9cac74;
+    color: #fff;
+    transition: all 0.5s;
 
 }
 
 #pesquisa:hover {
+  
+    transform: scale(1.1);
+  
 
-    background-color: #3c4c63;
+}
+
+#carrinho {
+
+  color: #3c4c63;
+
+}
+
+#botaoPerfil {
+
+  background-color: #fff;
+  border: #fff;
+  color: #3c4c63;
+  transition: all 0.5s;
+
+}
+
+#botaoPerfil:hover {
+
+  background-color: #fff;
+  color: #3c4c63;
+  transform: scale(1.1);
+
+
+}
+
+#admin{
+  
+  background-color: #fff;
+  border: #fff;
+  color: #3c4c63;
+  transition: all 0.5s;
+}
+
+#admin:hover {
+
+  background-color: #fff;
+  color: #3c4c63;
+  transform: scale(1.1);
+
 
 }
