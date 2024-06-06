@@ -3,12 +3,9 @@ import './Cadastro.css';
 import CadastroImage from './cadastro.png';
 import { Image } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
-import { AuthContext } from '../../context/auth';
-import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import api from '../../API/api';
-import Select from "react-select";
 import { toast } from 'react-toastify';
 var contador = 1
 
@@ -17,66 +14,77 @@ function Cadastro() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    
-    const { signUp, loadingAuth } = useContext(AuthContext);
+
     const [municipios, setMunicipios] = useState([]);
-    const [cidade , setCidade] = useState('')
+    const [cidade, setCidade] = useState('')
     const [estados, setEstados] = useState([]);
     const [uf, setUf] = useState('');
-    
-    
+
+
 
     const navigate = useNavigate();
-    
+
 
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (nome !== '' && email !== '' && senha !== '' && uf !== 'selecione' && cidade !=='selecione' && uf !== '' && cidade !== '') {
-            await signUp(email, senha, nome, uf, cidade)
+        if (nome !== '' && email !== '' && senha !== '' && uf !== 'selecione' && cidade !== 'selecione' && uf !== '' && cidade !== '') {
+            api.post('/criarUsuario', {
+                nome: nome,
+                email: email,
+                senha: senha,
+                cidade: cidade,
+                uf: uf
+            }).then(
+
+                console.log("Cadastro realizado com sucesso!")
+
+            )
             navigate('/login')
-        }else{
+        } else {
 
             toast.error("Ocorreu um Erro!")
+            
         }
 
     }
 
     useEffect(() => {
         api
-          .get("/uf/v1")
-          .then((response) => setEstados(response.data))
-          .catch((err) => {
-            console.log("ops! ocorreu um erro" + err);
-          });
-      }, []);
+            .get("/loadApiUF")
+            .then((response) => setEstados(response.data))
+            .catch((err) => {
+                console.log("ops! ocorreu um erro" + err);
+            });
+    }, []);
 
-      if (uf && contador == 1){
-        
-        if(uf == "selecione"){
-            console.log("Selecione")
-        }else{
-        
-        var url = `/municipios/v1/${uf}`
-        
-        api
-        .get(url)
-        .then((response) => setMunicipios(response.data))
-        .catch((err) => {
-          console.log("ops! ocorreu um erro" + err);
-        });
-        contador--;
-    }}
-    
-    
 
-      const mudaEstado = (e) => {
-        setUf(e.target.value)
-        if (contador == 0){
-        contador++
+    if (uf && contador == 1) {
+
+        if (uf === "selecione") {
+            console.log("Por favor, selecione uma UF");
+        } else {
+            api.get('/loadApiCity', { params: { uf } })
+                .then((response) => {
+                    setMunicipios(response.data)
+                })
+                .catch((error) => {
+                    console.error("Erro ao enviar UF para o servidor:", error);
+                });
+            contador--;
+
+            
         }
     }
-      
+
+
+
+    const mudaEstado = (e) => {
+        setUf(e.target.value)
+        if (contador == 0) {
+            contador++
+        }
+    }
     return (
 
         <div style={{ justifyContent: 'center', display: 'flex' }}>
@@ -98,41 +106,41 @@ function Cadastro() {
                     <br />
                     <input autoComplete='off' id='inp' onChange={(e) => setSenha(e.target.value)} type='password'></input>
                     <p />
-                    
+
                     <p />
                     <Form.Label>Estado</Form.Label>
                     <br />
-                    <select id='inp' name='estade' style={{width: "100%"}} placeholder='Selecione um Estado' onChange={mudaEstado}>
-                            <option value={"selecione"}>Selecione um Estado</option>
+                    <select id='inp' name='estade' style={{ width: "100%" }} placeholder='Selecione um Estado' onChange={mudaEstado}>
+                        <option value={"selecione"}>Selecione um Estado</option>
                         {estados.map((estado, index) => {
-                            return(<option key={'estade' + index} value={estado.sigla}>{estado.nome}</option>);
+                            return (<option key={'estade' + index} value={estado.sigla}>{estado.nome}</option>);
                         })}
 
                     </select>
                     <p />
                     <Form.Label>Cidade</Form.Label>
                     <br />
-                    <select id='inp' name='city' style={{width: "100%"}} placeholder='Selecione uma Cidade' onChange={(e) => setCidade(e.target.value)}>
-                            <option value={"selecione"}>Selecione uma Cidade</option>
+                    <select id='inp' name='city' style={{ width: "100%" }} placeholder='Selecione uma Cidade' onChange={(e) => setCidade(e.target.value)}>
+                        <option value={"selecione"}>Selecione uma Cidade</option>
                         {municipios.map((cidade, index) => {
-                            return(<option key={'city' + index} value={cidade.sigla}>{cidade.nome}</option>);
+                            return (<option key={'city' + index} value={cidade.sigla}>{cidade.nome}</option>);
                         })}
 
                     </select>
                     <p></p>
                     <button id='entrar' onClick={handleSubmit}>Cadastrar-se</button>
-                    
 
-                    
-                    
 
-                    
+
+
+
+
+
+
+                </div>
 
 
             </div>
-
-
-        </div>
         </div >
 
 

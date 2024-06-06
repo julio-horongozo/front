@@ -4,7 +4,7 @@ import axios from 'axios';
 //URL DA API: /movie/now_playing?api_key=28fc232cc001c31e8a031f419d0a14ca&language=pt-BR
 
 const api = axios.create({
-  baseURL: 'https://brasilapi.com.br/api/ibge'
+  baseURL: 'http://localhost:8000/'
 });
 
 export default api;

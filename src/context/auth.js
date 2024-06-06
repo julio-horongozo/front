@@ -1,20 +1,32 @@
 import { useState, createContext, useEffect } from 'react';
-import { auth, db } from '../services/firebaseConnection';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
-
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-export const AuthContext = createContext({});
+export const AuthContext = createContext({
+  updateUser: () => {}
+});
 
-function AuthProvider({ children }){
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
+  function updateUser(nome) {
+    const storedData = localStorage.getItem('@ticketsPRO');
+
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      userData.nome = nome;
+      localStorage.setItem('@ticketsPRO', JSON.stringify(userData));
+    } else {
+      console.error('Nenhum dado encontrado no armazenamento local.'); 
+    }
+
+  };
+  
+  
 
   useEffect(() => {
     async function loadUser(){
@@ -34,80 +46,15 @@ function AuthProvider({ children }){
   }, [])
 
 
-  async function signIn(email, password){
-    setLoadingAuth(true);
-
-    await signInWithEmailAndPassword(auth, email, password)
-    .then( async (value) => {
-      let uid = value.user.uid;
-
-      const docRef = doc(db, "users", uid);
-      const docSnap = await getDoc(docRef)
-
-      let data = {
-        uid: uid,
-        nome: docSnap.data().nome,
-        email: value.user.email,
-        uf: docSnap.data().uf,
-        cidade: docSnap.data().cidade,
-
-      }
+  async function signIn(data){
 
       setUser(data);
-      storageUser(data);
-      setLoadingAuth(false);
+      storageUser(data);      
+
       toast.success("Você Fez o Log-in")
       navigate("/perfil")
-    })
-    .catch((error) => {
-      console.log(error);
-      setLoadingAuth(false);
-      toast.error("Ocorreu um Erro")
       
-    }) 
-
-  }
-
-
-  // Cadastrar um novo user
-  async function signUp(email, password, name, uf, cidade){
-    setLoadingAuth(true);
-
-    await createUserWithEmailAndPassword(auth, email, password, uf, cidade)
-    .then( async (value) => {
-        let uid = value.user.uid
-
-        await setDoc(doc(db, "users", uid), {
-          nome: name,
-          uf: uf,
-          cidade: cidade,
-        })
-        .then( () => {
-
-          let data = {
-            uid: uid,
-            nome: name,
-            email: value.user.email,
-            uf: uf,
-            cidade: cidade,
-            
-          };
-
-          setUser(data);
-          storageUser(data);
-          setLoadingAuth(false);
-          navigate("/perfil")
-          
-        })
-
-
-    })
-    .catch((error) => {
-      console.log(error);
-      setLoadingAuth(false);
-    })
-
-  }
+    }
 
 
   function storageUser(data){
@@ -115,26 +62,23 @@ function AuthProvider({ children }){
   }
 
   async function logout(){
-    await signOut(auth);
     localStorage.removeItem('@ticketsPRO');
     setUser(null);
     navigate("/")
   }
-
-  
 
   return(
     <AuthContext.Provider 
       value={{
         signed: !!user,
         user,
+        updateUser,
         signIn,
-        signUp,
         logout,
         loadingAuth,
         loading,
         storageUser,
-        setUser
+        setUser         
       }}
     >
       {children}

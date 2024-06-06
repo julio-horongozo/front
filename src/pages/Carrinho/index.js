@@ -1,69 +1,37 @@
 import './Carrinho.css';
 import { useEffect, useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
-import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from '../../services/firebaseConnection';
-import { doc, deleteDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../context/auth.js';
 import { Form } from 'react-bootstrap';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { updateDoc } from 'firebase/firestore';
+import api from '../../API/api.js';
 
 function Carrinho() {
 
     const [produtos, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
-    const { user, logout } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const [quantidade, setQuantidade] = useState();
 
-    useEffect(() => {
-        async function loadProducts() {
-            const unsub = onSnapshot(collection(db, "produtos"), (snapshot) => {
-                let listaProdutos = [];
-
-                snapshot.forEach((doc) => {
-                    listaProdutos.push({
-                        id: doc.id,
-                        codigo: doc.data().codigo,
-                        titulo: doc.data().titulo,
-                        destaque: doc.data().destaque,
-                        detalhes: doc.data().detalhes,
-                        imagem: doc.data().imagem,
-                        preco: doc.data().preco,
-                    })
-                })
-
-                setProducts(listaProdutos);
-            })
-        }
-
-        loadProducts();
-
-    }, [])
 
     useEffect(() => {
-        async function loadCart() {
-            const unsub = onSnapshot(collection(db, "carrinho"), (snapshot) => {
-                let listaProdutos = [];
+        api
+            .get("/readProduct")
+            .then((response) => setProducts(response.data))
+            .catch((err) => {
+                console.log("ops! ocorreu um erro" + err);
+            });
+    }, []);
 
-                snapshot.forEach((doc) => {
-                    listaProdutos.push({
-                        id: doc.id,
-                        nome: doc.data().nome,
-                        preco: doc.data().preco,
-                        produto: doc.data().produto,
-                        quantidade: doc.data().quantidade,
-                    })
-                })
-
-                setCart(listaProdutos);
-            })
-        }
-
-        loadCart();
-
-    }, [])
+    useEffect(() => {
+        api
+            .get("/readCart")
+            .then((response) => setCart(response.data))
+            .catch((err) => {
+                console.log("ops! ocorreu um erro" + err);
+            });
+    }, []);
 
     var soma = 0;
 
@@ -76,27 +44,19 @@ function Carrinho() {
 
     async function mais(item) {
 
-
         var quantidade_var = parseFloat(item.quantidade)
         quantidade_var = quantidade_var + 1;
 
-
-
-        const docRef = doc(db, "carrinho", item.id)
-
-        await updateDoc(docRef, {
+        api.put(`/updateCarrinho/${item.uid}`, {
             quantidade: quantidade_var
         })
-            .then(() => {
-                console.log("Adicionado ao Carrinho")
+            .then(response => {
+                toast.success("Produto Alterado com Sucesso!")
+                window.location.reload(false);
             })
-            .catch((error) => {
-                console.error("Ocorreu algum Erro!")
-            })
-
-
-
-
+            .catch(error => {
+                console.error(error);
+            });
 
     }
 
@@ -111,29 +71,31 @@ function Carrinho() {
             quantidade_var = quantidade_var - 1;
 
 
-
-            const docRef = doc(db, "carrinho", item.id)
-
-            await updateDoc(docRef, {
+            api.put(`/updateCarrinho/${item.uid}`, {
                 quantidade: quantidade_var
             })
-                .then(() => {
-                    console.log("Removido do Carrinho")
+                .then(response => {
+                    toast.success("Produto Alterado com Sucesso!")
+                    window.location.reload(false);
                 })
-                .catch((error) => {
-                    console.error("Ocorreu algum Erro!")
-                })
+                .catch(error => {
+                    console.error(error);
+                });
 
         }
     }
 
     async function excluirPost(id) {
-        const docRef = doc(db, "carrinho", id)
-        await deleteDoc(docRef)
-            .then(() => {
-                toast.success("Produto Excluido!")
+        api.delete(`/deleteCarrinho/${id}`, id)
+            .then(response => {
+                toast.success("Produto Excluido com sucesso!");
+                window.location.reload(false);
             })
+            .catch(error => {
 
+                console.error('Erro ao enviar dados para o servidor:', error);
+
+            })
     }
 
     return (
@@ -156,20 +118,19 @@ function Carrinho() {
                     {cart.map((carrinho) => {
                         if (carrinho.nome == user.uid)
                             return (
-
-
-
                                 <tr key={carrinho}>
 
                                     {produtos.map((produto) => {
-                                        if (carrinho.produto == produto.id) {
+
+                                        if (carrinho.produto == produto.uid) {
                                             return <td data-label="Descrição">{produto.titulo}</td>
                                         }
                                     })}
+
                                     <td data-label="Preço">R${parseFloat(carrinho.preco).toFixed(2)}</td>
 
                                     <td data-label="Quantidade"><Form.Group controlId='quantidade'>
-                                        <InputGroup className="mb-3" style={{width: "70%"}}>
+                                        <InputGroup className="mb-3" style={{ width: "70%" }}>
                                             <Button type='submit' id='zoomout' style={{ backgroundColor: '#9cac74', borderColor: '#9cac74', width: '30%' }} onClick={(e) => { menos(carrinho) }}>-</Button>
                                             <Form.Control
                                                 readOnly
@@ -184,7 +145,7 @@ function Carrinho() {
                                     </Form.Group></td>
                                     <td data-label="Total" className='total'>R${(parseFloat(carrinho.quantidade) * parseFloat(carrinho.preco)).toFixed(2)}</td>
                                     <p style={{ display: 'none' }}>{soma = (parseFloat(carrinho.preco) * carrinho.quantidade) + soma}</p>
-                                    <td ><button id='entrar' onClick={() => excluirPost(carrinho.id)}>Excluir Produto</button></td>
+                                    <td ><button id='entrar' onClick={() => excluirPost(carrinho.uid)}>Excluir Produto</button></td>
                                 </tr>
 
 
@@ -204,7 +165,7 @@ function Carrinho() {
                 <h3 style={{ paddingRight: '6%', paddingTop: '5%' }}>Total: R${soma.toFixed(2)}</h3>
 
             </div>
-            <Button id='entrar1' style={{ marginTop: "40px", marginBottom: "15px" }} onClick={(e) => {toast.error("Função não Disponível")}}>Finalizar Compra</Button>
+            <Button id='entrar1' style={{ marginTop: "40px", marginBottom: "15px" }} onClick={(e) => { toast.error("Função não Disponível") }}>Finalizar Compra</Button>
 
         </div>
 

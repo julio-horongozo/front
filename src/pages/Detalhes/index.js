@@ -1,7 +1,6 @@
-import { useAsyncError, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './Detalhes.css';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
@@ -10,14 +9,10 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Image from 'react-bootstrap/Image';
-import { onSnapshot, collection, getDocs, getDoc, doc } from 'firebase/firestore';
-import { db } from '../../services/firebaseConnection';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/auth.js';
-import { addDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
-
-const listRef = collection(db, "produtos");
+import api from '../../API/api.js';
 
 function Detalhes(){
 
@@ -29,59 +24,28 @@ function Detalhes(){
     const [ destaqueProduto , setDestaqueProduto ] = useState('');
     const [ detalhesProduto , setDetalhesProduto ] = useState('');
     const [ imagemProduto , setImagemProduto ] = useState('');
-    const [ precoProduto , setprecoProduto ] = useState('');
+    const [ precoProduto , setPrecoProduto ] = useState('');
 
     const { user } = useContext(AuthContext);
-    
 
     useEffect(() => {
-      async function loadCustomers(){
-        const querySnapshot = await getDocs(listRef)
-        .then( (snapshot) => {
-          let lista = [];
-  
-          snapshot.forEach((doc) => {
-            lista.push({
-              id: doc.id,
-              titulo: doc.data().titulo,
-            })
+      if (id) {
+        api.get(`/readProduct/${id}`)
+          .then((response) => {
+            const { codigo, titulo, detalhes, imagem, preco, destaque } = response.data
+            setCodigoProduto(codigo);
+            setNomeProduto(titulo);
+            setDetalhesProduto(detalhes);
+            setImagemProduto(imagem);
+            setPrecoProduto(preco);
+            setDestaqueProduto(destaque);
+             
           })
-            
-          if(id){
-            loadId(lista);
-          }
-  
-        })
-        .catch((error) => {
-          console.log("ERRRO AO BUSCAR OS CLIENTES", error)
-          })
+          .catch((err) => {
+            console.log("ops! ocorreu um erro" + err);
+          });
       }
-  
-      loadCustomers();    
-    }, [id])
-
-
-    async function loadId(lista){
-      const docRef = doc(db, "produtos", id);
-      await getDoc(docRef)
-      .then((snapshot) => {
-        setNomeProduto(snapshot.data().titulo)
-        setCodigoProduto(snapshot.data().codigo)
-        setDestaqueProduto(snapshot.data().destaque)
-        setDetalhesProduto(snapshot.data().detalhes)
-        setImagemProduto(snapshot.data().imagem)
-        setprecoProduto  (snapshot.data().preco)  
-
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-    }
-
-    
-     
-
+    }, [id]);
 
       const handleChangeQuantidade = Event => {
 
@@ -110,8 +74,10 @@ function Detalhes(){
       
     async function adicionarCarrinho(e){
 
+      
+
       if (user){
-        await addDoc(collection(db, "carrinho"), {
+        api.post('/adicionarCarrinho', {
           produto: id,
           quantidade: quantidade,
           nome: user.uid,
@@ -125,6 +91,10 @@ function Detalhes(){
         })
     
     
+      }else {
+
+        toast.error("Faça o log-in Primeiramente!")
+
       }
 
     }

@@ -5,29 +5,28 @@ import { Image } from 'react-bootstrap';
 import Trator from './trator.png';
 import { useState, useContext } from 'react';
 import { AuthContext } from '../../context/auth.js';
-
-import { toast } from 'react-toastify'
-
-
-
+import api from '../../API/api.js';
+import { toast } from 'react-toastify';
 
 
 export default function SignIn(){
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const { signIn, loadingAuth } = useContext(AuthContext);
 
   async function handleSignIn(e){
     e.preventDefault();
 
-    if(email !== '' && password !== ''){
-      await signIn(email, password);
-      
-      
+    try {
+      const response = await api.post('/login', {
+        email: email,
+        password: password
+      });
+      signIn(response.data)
+    } catch (error) {
+      toast.error('Usuário/Senha não Localizado!');
     }
-
   }
 
     return(
